@@ -4,35 +4,31 @@ import alert from "./alert.js";
 import say from "./speak.js";
 
 var USER = "admin";
-const PW = "admin";
 
 /** Boot screen */
 async function boot() {
 	clear();
 
-	await type("Loading JOEY...", {
-		initialWait: 3000
+	await type("Loading JOEY 0.1...", {
+		initialWait: 1000
 	});
 	await type("AI Model Loaded.");
 
 	await type(
 		[
 			"> Uploading consciousness",
-			"Loading........................"
+			"Loading..."
 		],
 		{
-			lineWait: 1000
+			lineWait: 100
 		}
 	);
-
-	await type(["OK.", " "]);
 
 	await type(["> SET TERMINAL/LOGON", "USER AUTHENTICATION CHECK"], {
 		lineWait: 1000,
 		finalWait: 3000
 	});
 
-	await pause();
 	return login();
 }
 
@@ -41,26 +37,11 @@ async function login() {
 	//clear();
 	USER = await prompt("What is your name?");
 	//let password = await prompt("Password:", true);
-	await pause();
+	await type("Logging in...");
 	say("AUTHENTICATION SUCCESSFUL");
-	await alert("Welcome " + user);
+	await alert("Welcome " + USER);
 	clear();
 	return main();
-	/*if (user === USER && password === PW) {
-		await pause();
-		say("AUTHENTICATION SUCCESSFUL");
-		await alert("AUTHENTICATION SUCCESSFUL");
-		clear();
-		return main();
-	} else {
-		await type([
-			"Incorrect user and/or password.",
-			"Please try again"
-		]);
-		await pause(3);
-		clear();
-		return login();
-	}*/
 }
 
 /** Main input terminal, recursively calls itself */
