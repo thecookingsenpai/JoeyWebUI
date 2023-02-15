@@ -1,4 +1,3 @@
-
 import { type } from "./util/io.js";
 import { power } from "./util/power.js";
 import { toggleFullscreen } from "./util/screens.js";
@@ -14,16 +13,15 @@ async function onLoad() {
 	// Set up click event handlers for UI buttons
 	registerHandlers();
 
-	if(fullscreen) {
+	if (fullscreen) {
 		toggleFullscreen(true);
 	}
 
 	// If a command is passed in the URL, execute that immediately
 	if (command || debugParam) {
-		run(command, debugParam)
+		run(command, debugParam);
 	}
 
-	
 	//togglePower();
 }
 
@@ -37,7 +35,10 @@ async function run(command, debug) {
 	// Run the command (setting debug param will skip typing the command)
 	if (command) {
 		if (!debug) {
-			await type("> " + command, { initialWait: 3000, finalWait: 1500 });
+			await type("> " + command, {
+				initialWait: 3000,
+				finalWait: 1500
+			});
 		}
 		await parse(command);
 	}
