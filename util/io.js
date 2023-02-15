@@ -327,7 +327,7 @@ async function parse(input) {
 	}
 
 	await type("Joey > " + input);
-	pause(1000);
+	await pause(1);
 	return;
 }
 
