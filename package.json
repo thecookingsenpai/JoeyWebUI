@@ -1,0 +1,15 @@
+{
+  "name": "joey-ai-chatbot",
+  "version": "1.0.0",
+  "description": "A GPT-3 based ai chatbot with a memory system.\n(UI and main logic forked from https://codesandbox.io/s/crt-terminal-in-css-js-tlijm)",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve"
+  },
+  "keywords": [],
+  "author": "Edwin Keijl",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^11.2.0"
+  }
+}

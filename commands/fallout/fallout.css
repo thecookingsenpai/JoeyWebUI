@@ -1,0 +1,89 @@
+.fallout,
+.intro,
+.outro {
+	text-transform: none;
+	padding: 2rem;
+	--lh: calc(1ch * 2.55);
+	--column: calc(17 * var(--lh));
+}
+
+.outro .typer,
+.intro .typer {
+	margin-bottom: 1rem;
+}
+
+.outro a {
+	display: block;
+	color: var(--color);
+	text-decoration: none;
+}
+
+.outro a:active,
+.outro a:focus,
+.outro a:hover {
+	background: var(--color);
+	color: var(--bg);
+}
+
+.outro .end {
+	position: absolute;
+	bottom: 0;
+}
+
+.game {
+	display: flex;
+	position: relative;
+	max-height: var(--column);
+	line-height: var(--lh);
+}
+
+.cypher {
+	flex: 0 0 auto;
+	width: 40ch;
+	height: var(--column);
+	column-count: 2;
+	column-gap: 1ch;
+	column-fill: auto;
+	word-break: break-all;
+	outline: none;
+}
+
+.hide {
+	visibility: hidden;
+}
+.cypher span.active,
+.cypher span:hover {
+	background-color: var(--color);
+	color: var(--bg);
+}
+
+.cypher span[data-word],
+.cypher span[data-special] {
+	cursor: pointer;
+}
+.active-word:before {
+	content: "> ";
+	display: inline-block;
+}
+.output {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	padding-left: 1ch;
+}
+.lives,
+.output pre {
+	margin: 0;
+	margin-bottom: 2.5ch;
+}
+
+.locked {
+	text-align: center;
+}
+.active-word .typer {
+	display: inline;
+}
+.locked .typer {
+	margin-top: 5rem;
+}
