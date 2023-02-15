@@ -222,7 +222,7 @@ function moveCaretToEnd(el) {
 }
 
 /** Shows an input field, returns a resolved promise with the typed text on <enter> */
-async function input(pw) {
+async function input(pw=false) {
 	return new Promise((resolve) => {
 		// This handles all user input
 		const onKeyDown = (event) => {
@@ -302,9 +302,9 @@ async function input(pw) {
 		let terminal = document.querySelector(".terminal");
 		let input = document.createElement("span");
 		input.setAttribute("id", "input");
-		if (pw) {
+		/*if (pw) {
 			input.classList.add("password");
-		}
+		}*/
 		input.setAttribute("contenteditable", true);
 		input.addEventListener("keydown", onKeyDown);
 		terminal.appendChild(input);
@@ -327,7 +327,6 @@ async function parse(input) {
 	}
 
 	await type("Joey > " + input);
-	await pause(1);
 	return;
 }
 
