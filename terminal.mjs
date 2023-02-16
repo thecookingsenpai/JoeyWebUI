@@ -4,6 +4,7 @@ import { toggleFullscreen } from "./util/screens.js";
 import { registerHandlers, togglePower } from "./util/ui.mjs";
 
 async function onLoad() {
+	
 	// Check for query parameters in the URL, e.g. ?command=help&fullscreen=1
 	const urlParams = new URLSearchParams(window.location.search);
 	const command = urlParams.get("command");

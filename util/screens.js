@@ -3,7 +3,7 @@ import pause from "./pause.js";
 import alert from "./alert.js";
 import say from "./speak.js";
 
-var USER = "admin";
+var USER = "Human";
 
 /** Boot screen */
 async function boot() {
@@ -12,35 +12,28 @@ async function boot() {
 	await type("Loading JOEY 0.1...", {
 		initialWait: 1000
 	});
-	await type("AI Model Loaded.");
-
-	await type(
-		[
-			"> Uploading consciousness",
-			"Loading..."
-		],
-		{
-			lineWait: 100
-		}
-	);
-
-	await type(["> SET TERMINAL/LOGON", "USER AUTHENTICATION CHECK"], {
-		lineWait: 1000,
-		finalWait: 3000
-	});
-
+	if(OpenAI) {
+		await type("AI Model Loaded.");
+	} else {
+		await type("AI Model Failed to Load. Sorry.");
+		return;
+	}
 	return login();
 }
 
 /** Login screen */
 async function login() {
 	//clear();
-	USER = await prompt("What is your name?");
+	USER = await prompt("Please introduce yourself.");
 	//let password = await prompt("Password:", true);
 	await type("Logging in...");
 	say("AUTHENTICATION SUCCESSFUL");
 	await alert("Welcome " + USER);
+	// Initialize the prompt with the user's name
+    let firstCompletion = await joey_init(USER);
 	clear();
+	// Print the first completion
+	await type("Joey > "  + firstCompletion);
 	return main();
 }
 
