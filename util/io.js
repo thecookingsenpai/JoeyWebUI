@@ -222,9 +222,11 @@ function moveCaretToEnd(el) {
 }
 
 /** Shows an input field, returns a resolved promise with the typed text on <enter> */
-async function input(pw=false) {
+async function input(pw=false, lower=false) {
 	return new Promise((resolve) => {
 		// This handles all user input
+
+		/* NOTE onKeyDown is deprecated, kept for reference
 		const onKeyDown = (event) => {
 			typeSound();
 			// ENTER
@@ -235,7 +237,7 @@ async function input(pw=false) {
 					false
 				);
 				let result = cleanInput(
-					event.target.textContent
+					event.target.textContent, lower
 				);
 
 				// history
@@ -274,6 +276,9 @@ async function input(pw=false) {
 				let span = document.createElement("span");
 
 				let keyCode = event.keyCode;
+				//console.log("keyCode: ", keyCode);
+				// NOTE Hardfix for ?
+				if (keyCode === 191) keyCode = 63;
 				let chrCode =
 					keyCode - 48 * Math.floor(keyCode / 48);
 				let chr = String.fromCharCode(
@@ -297,7 +302,77 @@ async function input(pw=false) {
 				moveCaretToEnd(event.target);
 			}
 		};
+		*/
 
+		// NOTE keypress is localized 
+		// NOTE Theoretically, keyCode could be replaced with key='<key>'
+		// REVIEW Multiple cleanup operations can be used here (key vs keyCode)
+		const onKeyPress = (event) => {
+			typeSound();
+			// ENTER
+			if (event.key === "Enter") {
+				event.preventDefault();
+				event.target.setAttribute(
+					"contenteditable",
+					false
+				);
+				let result = cleanInput(
+					event.target.textContent, lower
+				);
+
+				// history
+				addToHistory(result);
+				resolve(result);
+			}
+			// UP
+			else if (event.keyCode === 38) {
+				if (historyIndex === -1)
+					tmp = event.target.textContent;
+				historyIndex = Math.min(
+					prev.length - 1,
+					historyIndex + 1
+				);
+				let text = prev[historyIndex];
+				event.target.textContent = text;
+			}
+			// DOWN
+			else if (event.keyCode === 40) {
+				historyIndex = Math.max(-1, historyIndex - 1);
+				let text = prev[historyIndex] || tmp;
+				event.target.textContent = text;
+			}
+			// BACKSPACE
+			else if (event.keyCode === 8) {
+				// Prevent inserting a <br> when removing the last character
+				if (event.target.textContent.length === 1) {
+					event.preventDefault();
+					event.target.innerHTML = "";
+				}
+			}
+			// Check if character can be shown as output (skip if CTRL is pressed)
+			else if (isPrintable(event.keyCode) && !event.ctrlKey) {
+				event.preventDefault();
+				// Wrap the character in a span
+				let span = document.createElement("span");
+				//console.log("keyCode: ", keyCode);
+				// Add span to the input
+				span.classList.add("char");
+				span.textContent = event.key;
+				event.target.appendChild(span);
+
+				// For password field, fill the data-pw attr with asterisks
+				// which will be shown using CSS
+				if (pw) {
+					let length =
+						event.target.textContent.length;
+					event.target.setAttribute(
+						"data-pw",
+						Array(length).fill("*").join("")
+					);
+				}
+				moveCaretToEnd(event.target);
+			}
+		};
 		// Add input to terminal
 		let terminal = document.querySelector(".terminal");
 		let input = document.createElement("span");
@@ -306,15 +381,16 @@ async function input(pw=false) {
 			input.classList.add("password");
 		}*/
 		input.setAttribute("contenteditable", true);
-		input.addEventListener("keydown", onKeyDown);
+		input.addEventListener("keypress", onKeyPress);
+		//input.addEventListener("keydown", onKeyDown);
 		terminal.appendChild(input);
 		input.focus();
 	});
 }
 
 // Processes the user input and executes a command
-async function parse(input) {
-	input = cleanInput(input);
+async function parse(input, lower=false) {
+	input = cleanInput(input, lower);
 
 	if (!input) {
 		return;
@@ -331,8 +407,13 @@ async function parse(input) {
 	return;
 }
 
-function cleanInput(input) {
-	return input.toLowerCase().trim();
+function cleanInput(input, lower=false) {
+	var clean = input;
+	if (lower) {
+		clean = input.toLowerCase();
+	}
+	clean = input.trim();
+	return clean;
 }
 
 function scroll(el = document.querySelector(".terminal")) {
@@ -340,9 +421,9 @@ function scroll(el = document.querySelector(".terminal")) {
 }
 
 /** Types the given text and asks input */
-async function prompt(text, pw = false) {
+async function prompt(text, lower=true, pw = false) {
 	await type(text);
-	return input(pw);
+	return input(pw, lower);
 }
 
 /** Sets a global event listeners and returns when a key is hit */
