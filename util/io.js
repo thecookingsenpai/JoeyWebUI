@@ -319,14 +319,15 @@ async function parse(input) {
 	if (!input) {
 		return;
 	}
-	// Only allow words, separated by space
-	let matches = String(input).match(/^(\w+)(?:\s((?:\w+(?:\s\w+)*)))?$/);
 
-	if (!matches) {
-		throw new Error("Invalid command");
-	}
-
-	await type("Joey > " + input);
+	// Get the completion
+	console.log("User input was: " + input)
+	let completion = await joey_createCompletion(input)
+	// Removes any trailing or leading whitespaces and newlines
+	completion = completion.replace(/\s+$/, "");
+    completion = completion.replace(/^\s+/, "");
+	console.log("Completion was: " + completion)
+	await type("Joey > " + completion);
 	return;
 }
 
