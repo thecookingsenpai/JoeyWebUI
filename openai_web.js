@@ -16,6 +16,12 @@ class OpenAI {
         },
         body: JSON.stringify(data),
         });
+        // Check if the response is ok
+        if (response.error) {
+            if (response.error.code == 'invalid_api_key') {
+                return "401";
+            }
+        }
         return response.json();
     }
     
@@ -34,13 +40,13 @@ class OpenAI {
     async createCompletion(prompt, 
                            model="text-davinci-003",
                            maxTokens=75, 
-                           temperature=0.8, 
+                           temperature=0.9, 
                            topP=1,
                            frequencyPenalty=0.4,
                            presencePenalty=0.8,
                            ) {
         // Compose  the stop (aka end of generation when the model sees this)
-        let stop=[this.username + " >", "Joey >"];
+        let stop=[this.username + " >", "Joey >"]; // "Joey >"
         const data = {
             "model": model,
             "prompt": prompt, 
@@ -54,4 +60,9 @@ class OpenAI {
         const completion = await this.post("completions", data);
         return completion;
     }
+
+    // Function to get the user's name
+    getUsername() {
+        return this.username;
+    }   
 }

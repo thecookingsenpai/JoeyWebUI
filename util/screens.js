@@ -27,10 +27,18 @@ async function login() {
 	USER = await prompt("Please introduce yourself.");
 	//let password = await prompt("Password:", true);
 	await type("Logging in...");
-	say("AUTHENTICATION SUCCESSFUL");
+	// Check if in local storage we have an api key 
+	let openai_key = localStorage.getItem("openai_key");
+	if(!openai_key) {
+		// REVIEW - Probably the 2nd argument shouldn't be necessary (lower) anymore
+		openai_key = await prompt("Please enter your OpenAI API key.", false);
+		console.log(openai_key);
+		localStorage.setItem("openai_key", openai_key);
+	}
+	say("CREDENTIALS SAVED LOCALLY.");
 	await alert("Welcome " + USER);
 	// Initialize the prompt with the user's name
-    let firstCompletion = await joey_init(USER);
+    let firstCompletion = await joey_init(USER, openai_key);
 	clear();
 	// Print the first completion
 	await type("Joey > "  + firstCompletion);
